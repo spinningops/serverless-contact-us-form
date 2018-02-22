@@ -1,22 +1,19 @@
 # Serverless Contact Us Form
 
-The template: [cloudformation.yml](cloudformation.yml)
-
 Quickly deploy an endpoint to handle your `contact us` form on your static website.  We don't want to have servers running just to handle our `contact us` form which rarely gets invoked.  Oh, and we also need Captcha because we don't have time in our lives for spam.
 
 You can get your reCAPTCHA secret here:  https://www.google.com/recaptcha/admin#list
 
 ## Package and Deploy
-`aws cloudformation package --template-file stack.yml --output-template-file stack-output.yml --s3-bucket serverless-contact-us-form`
-`aws cloudformation deploy --template-file stack-output.yml --stack-name contact-us --capabilities CAPABILITY_IAM  --parameter-overrides "Subject=Contact Us" "ReCaptchaSecret=???" "ToEmailAddress=???"`
+```aws cloudformation package --template-file stack.yml --output-template-file stack-output.yml --s3-bucket serverless-contact-us-form```
+
+```aws cloudformation deploy --template-file stack-output.yml --stack-name contact-us --capabilities CAPABILITY_IAM  --parameter-overrides "Subject=Contact Us" "ReCaptchaSecret=???" "ToEmailAddress=???"```
+
 
 ## What AWS resources does this template use?
 * Lambda (API Function)
 * API Gateway (HTTP proxy to Lambda)
-* S3 (Lambda files)
-* SES (Send us the email)
-* CodeCommit (GIT repo)
-* CloudFormation (Infrastructure as Code)
+* SNS (Send us the email)
 * IAM (AWS permissions & users)
 
 ## HTML Form
