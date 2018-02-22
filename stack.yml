@@ -46,51 +46,6 @@ Resources:
             - '-topic'
 
   #
-  # Role that our Lambda will assume to provide access to other AWS resources
-  #
-  IamRoleLambdaExecution:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - lambda.amazonaws.com
-            Action:
-              - sts:AssumeRole
-      Path: '/'
-
-  #
-  # Create a Policy and attach it to our Lambda Role.
-  #
-  IamPolicyLambdaExecution:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyName: IamPolicyLambdaExecution
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Action:
-            - logs:CreateLogGroup
-            - logs:CreateLogStream
-          Resource: arn:aws:logs:us-east-1:*:*
-        - Effect: Allow
-          Action:
-            - logs:PutLogEvents
-          Resource: arn:aws:logs:us-east-1:*:*
-          Resource: '*'
-        - Effect: Allow
-          Action:
-            - sns:Publish
-          Resource: arn:aws:logs:us-east-1:*:*
-          Resource: !Ref ContactUsSNSTopic
-      Roles:
-      - Ref: IamRoleLambdaExecution
-
-  #
   # Our Lambda function.  Basic code has been added.  You will replace the code later via your Github repo.
   #
   ContactUsFunction:
@@ -98,10 +53,6 @@ Resources:
     Properties:
       Handler: index.handler
       Timeout: 5
-      Role:
-        Fn::GetAtt:
-          - IamRoleLambdaExecution
-          - Arn
       CodeUri: ./index.js
       Runtime: nodejs6.10
       Events:
@@ -115,3 +66,14 @@ Resources:
           ReCaptchaSecret: !Ref ReCaptchaSecret
           ContactUsSNSTopic: !Ref ContactUsSNSTopic
           Subject: !Ref Subject
+
+Outputs:
+  ApiUrl:
+    Description: URL of your API endpoint
+    Value: !Join
+      - ''
+      - - https://
+        - !Ref ServerlessRestApi
+        - '.execute-api.'
+        - !Ref 'AWS::Region'
+        - '.amazonaws.com/Prod'
