@@ -45,6 +45,44 @@ Resources:
           - - Ref: AWS::StackName
             - '-topic'
 
+  ApiGatewayApi:
+      Type: AWS::Serverless::Api
+      Properties:
+        StageName: Prod
+
+        Cors: "'*'"
+
+        DefinitionBody:
+          swagger: 2.0
+          basePath: !Sub '/Prod'
+          info:
+            title: Serverless Contact Us form for static website
+          schemes:
+            - https
+          paths:
+            /:
+              x-amazon-apigateway-any-method:
+                produces:
+                - application/json
+                responses:
+                  '200':
+                    description: 200 response
+                    schema:
+                      $ref: "#/definitions/Empty"
+                x-amazon-apigateway-integration:
+                  responses:
+                    default:
+                      statusCode: 200
+                  uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunction.Arn}/invocations"
+
+                  passthroughBehavior: when_no_match
+                  httpMethod: POST
+                  type: aws_proxy
+          definitions:
+            Empty:
+              type: object
+              title: Empty Schema
+
   #
   # Our Lambda function.  Basic code has been added.  You will replace the code later via your Github repo.
   #
@@ -59,6 +97,7 @@ Resources:
         PostEvent:
           Type: Api
           Properties:
+            RestApiId: !Ref ApiGatewayApi
             Path: /
             Method: post
       Environment:
@@ -73,7 +112,7 @@ Outputs:
     Value: !Join
       - ''
       - - https://
-        - !Ref ServerlessRestApi
+        - !Ref ApiGatewayApi
         - '.execute-api.'
         - !Ref 'AWS::Region'
         - '.amazonaws.com/Prod'
