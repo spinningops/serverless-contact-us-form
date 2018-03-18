@@ -42,6 +42,8 @@ exports.handler = function (event, context, callback) {
                     callback(null, {
                         statusCode: '200',
                         headers: {
+                            "Access-Control-Allow-Methods" : "DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT",
+                            "Access-Control-Allow-Headers" : "Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token",
                             "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
                             "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
                         },
@@ -52,6 +54,8 @@ exports.handler = function (event, context, callback) {
                 callback(null, {
                     statusCode: '500',
                     headers: {
+                        "Access-Control-Allow-Methods" : "DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT",
+                        "Access-Control-Allow-Headers" : "Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token",
                         "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
                         "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
                     },
@@ -65,6 +69,8 @@ exports.handler = function (event, context, callback) {
         callback(null, {
             statusCode: '500',
             headers: {
+                "Access-Control-Allow-Methods" : "DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT",
+                "Access-Control-Allow-Headers" : "Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token",
                 "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
                 "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
             },

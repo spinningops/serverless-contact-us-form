@@ -33,7 +33,7 @@ Parameters:
 Resources:
   ContactUsFunction:
     Properties:
-      CodeUri: s3://serverless-contact-us-form/e0d9818e1ef0f3e90634bc120c197986
+      CodeUri: s3://serverless-contact-us-form/bbcd09794e2458768e2fc74983bbf511
       Environment:
         Variables:
           ContactUsSNSTopic:
