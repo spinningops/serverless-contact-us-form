@@ -69,9 +69,9 @@ ___
     aws cloudformation deploy --template-file stack-output.yml --stack-name YOUR_STACK_NAME --capabilities CAPABILITY_IAM --parameter-overrides "Subject=Thanks for contacting us" "ReCaptchaSecret=YOUR_CAPTCHA_SERVER_SECRET" "ToEmailAddress=WHO_SHOULD_RECEIVE_THESE_EMAILS@gmail.com"
     ```
 
-5. Update `YOUR_API_GATEWAY_URL` in `./index.html` with your [API Gateway Url](https://console.aws.amazon.com/apigateway/home) that CloudFormation created
+5. Update `YOUR_API_GATEWAY_URL` in `./test/index.html` with your [API Gateway Url](https://console.aws.amazon.com/apigateway/home) that CloudFormation created
    
-6. Update `YOUR_GOOGLE_RECAPTCHA_CLIENT_KEY` in `./index.html` with your Google **client** key
+6. Update `YOUR_GOOGLE_RECAPTCHA_CLIENT_KEY` in `./test/index.html` with your Google **client** key
 
 7. Load the test server to try your lambda function. This is required because Google's reCAPTCHA needs to validate the server the captcha runs on.
 
