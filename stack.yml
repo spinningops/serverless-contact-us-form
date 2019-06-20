@@ -44,6 +44,50 @@ Resources:
           - ''
           - - Ref: AWS::StackName
             - '-topic'
+  #
+  # Role that our Lambda will assume to provide access to other AWS resources
+  #
+  IamRoleLambdaExecution:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: '/'
+
+  #
+  # Create a Policy and attach it to our Lambda Role.
+  #
+  IamPolicyLambdaExecution:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: IamPolicyLambdaExecution
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+          Resource: arn:aws:logs:us-east-1:*:*
+        - Effect: Allow
+          Action:
+            - logs:PutLogEvents
+          Resource: arn:aws:logs:us-east-1:*:*
+          Resource: '*'
+        - Effect: Allow
+          Action:
+            - sns:Publish
+          Resource: arn:aws:logs:us-east-1:*:*
+          Resource: !Ref ContactUsSNSTopic
+      Roles:
+        - Ref: IamRoleLambdaExecution
 
   #
   # Our Lambda function.  Basic code has been added.  You will replace the code later via your Github repo.
@@ -54,7 +98,11 @@ Resources:
       Handler: index.handler
       Timeout: 5
       CodeUri: ./index.js
-      Runtime: nodejs6.10
+      Runtime: nodejs8.10
+      Role:
+        Fn::GetAtt:
+          - IamRoleLambdaExecution
+          - Arn
       Events:
         PostEvent:
           Type: Api

@@ -1,0 +1,79 @@
+<html>
+
+<head>
+    <!-- Basic styling -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" />
+    
+    <!-- Google reCAPTCHA library -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        function submitForm() {
+            // =============================================
+            // Extract values from form
+            // =============================================
+            const postBody = {
+                name: $("#contact-us-form input[name='name']").val(),
+                email: $("#contact-us-form input[name='email']").val(),
+                phone: $("#contact-us-form input[name='phone']").val(),
+                message: $("#contact-us-form textarea[name='message']").val(),
+                'g-recaptcha-response': $("#contact-us-form textarea[name='g-recaptcha-response']").val()
+            }
+
+            // =============================================
+            // Replace YOUR_API_GATEWAY_URL with your own
+            // =============================================
+            const apiGatewayUrl = 'YOUR_API_GATEWAY_URL'
+
+            $.post(apiGatewayUrl, JSON.stringify(postBody), function (data) {
+                // Success hide button
+                $('#contact-us-form button').hide()
+            }, 'json')
+                .done(function (data) {
+                    // =============================================
+                    // Success
+                    // =============================================
+                    console.log(data)
+                    console.log('second success')
+                })
+                .fail(function (xhr, status, err) {
+                    // =============================================
+                    // Failure
+                    // =============================================
+                    console.log(status)
+                    console.log(err)
+                })
+        }
+    </script>
+</head>
+
+<body>
+    <div id="contact-us-form">
+        <div class="form-group">
+            <label for="nameInputEmail1">Name</label>
+            <input type="text" class="form-control" id="nameInputEmail1" name="name" placeholder="Full name">
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Email address</label>
+            <input type="email" class="form-control" id="exampleInputEmail1" name="email" placeholder="Enter email">
+        </div>
+        <div class="form-group">
+            <label for="phoneInputEmail1">Phone number</label>
+            <input type="text" class="form-control" id="phoneInputEmail1" name="phone" placeholder="Enter phone">
+        </div>
+        <div class="form-group">
+            <label for="messageInputEmail1">Message</label>
+            <textarea type="textarea" class="form-control" id="messageInputEmail1" name="message"
+                placeholder="Enter message"></textarea>
+        </div>
+
+        <p class="thanks">Thanks! We'll contact you soon.</p>
+        <div class="g-recaptcha" data-sitekey="YOUR_GOOGLE_RECAPTCHA_CLIENT_KEY"></div>
+
+        <button onClick="submitForm()">Submit</button>
+    </div>
+</body>
+
+</html>
