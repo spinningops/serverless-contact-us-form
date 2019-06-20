@@ -27,7 +27,7 @@
 
 ## **Prerequisites**
 
-Inside of the `test` directory there are two files. `index.html` and `server.js` that are used as references below. This guide assumes the user has experience with AWS, HTML, Javascript, and Node.2
+Inside of the `test` directory there are two files. `index.html` and `server.js` that are used as references below. This guide assumes the user has experience with AWS, HTML, Javascript, and Node
 
 ### AWS CLI
 
