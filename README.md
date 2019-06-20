@@ -17,12 +17,9 @@
   
 3. Unable to publish via SNS due to authorization error. The `stack.yml` in this directory has been updated to include the original repository's policy and role.
 
-    ```
-    2019-06-20T09:16:21.619Z aa75b5cf-3b56-4c97-be2d-b7f4c2b29aa6 { AuthorizationError: User: arn:aws:sts::107316217049:assumed-role/contact-us-3-ContactUsFunctionRole-3G3XO839FTIA/contact-us-3-ContactUsFunction-1WLRRTDVT7FLG is not authorized to perform: SNS:Publish on resource: arn:aws:sns:us-east-1:107316217049:contact-us-3-topic
-    ```
+    ```2019-06-20T09:16:21.619Z aa75b5cf-3b56-4c97-be2d-b7f4c2b29aa6 { AuthorizationError: User: arn:aws:sts::107316217049:assumed-role/contact-us-3-ContactUsFunctionRole-3G3XO839FTIA/contact-us-3-ContactUsFunction-1WLRRTDVT7FLG is not authorized to perform: SNS:Publish on resource: arn:aws:sns:us-east-1:107316217049:contact-us-3-topic```
 
 4. **Other**: Some small updates to `index.js` for readability using standard [Javascript style](https://standardjs.com/).
-
 
 
 ## **Prerequisites**
@@ -52,9 +49,7 @@ ___
   
 3. Upload artifacts to S3:
 
-    ```
-    aws cloudformation package --template-file stack.yml --output-template-file stack-output.yml --s3-bucket contact-form-bucket
-    ```
+    ```aws cloudformation package --template-file stack.yml --output-template-file stack-output.yml --s3-bucket contact-form-bucket```
 
 4. Deploy Cloudformation Stack
    - Update the command below with your desired values:
@@ -64,9 +59,7 @@ ___
      - `ToEmailAddress`
    - **Be sure to confirm your subscription that SNS emails you after deployment**
 
-    ```
-    aws cloudformation deploy --template-file stack-output.yml --stack-name YOUR_STACK_NAME --capabilities CAPABILITY_IAM --parameter-overrides "Subject=Thanks for contacting us" "ReCaptchaSecret=YOUR_CAPTCHA_SERVER_SECRET" "ToEmailAddress=WHO_SHOULD_RECEIVE_THESE_EMAILS@gmail.com"
-    ```
+    ```aws cloudformation deploy --template-file stack-output.yml --stack-name YOUR_STACK_NAME --capabilities CAPABILITY_IAM --parameter-overrides "Subject=Thanks for contacting us" "ReCaptchaSecret=YOUR_CAPTCHA_SERVER_SECRET" "ToEmailAddress=WHO_SHOULD_RECEIVE_THESE_EMAILS@gmail.com"```
 
 5. Update `YOUR_API_GATEWAY_URL` in `./test/index.html` with your [API Gateway Url](https://console.aws.amazon.com/apigateway/home) that CloudFormation created
    
@@ -93,9 +86,6 @@ ___
 
 - If you see errors such as "*Invalid Site Key*," you have not configured reCAPTCHA on google correctly.
 
-
-```
-Waiter encountered a terminal failure state Status: FAILED. Reason: Requires capabilities : [CAPABILITY_NAMED_IAM]
-```
+- ```Waiter encountered a terminal failure state Status: FAILED. Reason: Requires capabilities : [CAPABILITY_NAMED_IAM]```
 
 I received this error a couple of times even after deleting the cloudformation stack when testing. Renaming the `--stack-name` to a different than the previous fixed this for me.
