@@ -1,4 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
 Description: Serverless Contact Us form for static website
 Metadata:
   AWS::CloudFormation::Interface:
@@ -9,50 +10,19 @@ Metadata:
       - Subject
       - ToEmailAddress
       - ReCaptchaSecret
-Outputs:
-  ApiUrl:
-    Description: URL of your API endpoint
-    Value:
-      Fn::Join:
-      - ''
-      - - https://
-        - Ref: ServerlessRestApi
-        - .execute-api.
-        - Ref: AWS::Region
-        - .amazonaws.com/Prod
 Parameters:
-  ReCaptchaSecret:
-    Description: Your Google reCAPTCHA secret
-    Type: String
   Subject:
+    Type: String
     Description: Contact us email subject
-    Type: String
   ToEmailAddress:
-    Description: Email address you want contact form submittions to go to
     Type: String
+    Description: Email address you want contact form submittions to go to
+  ReCaptchaSecret:
+    Type: String
+    Description: Your Google reCAPTCHA secret
 Resources:
-  ContactUsFunction:
-    Properties:
-      CodeUri: s3://serverless-contact-us-form/bbcd09794e2458768e2fc74983bbf511
-      Environment:
-        Variables:
-          ContactUsSNSTopic:
-            Ref: ContactUsSNSTopic
-          ReCaptchaSecret:
-            Ref: ReCaptchaSecret
-          Subject:
-            Ref: Subject
-      Events:
-        PostEvent:
-          Properties:
-            Method: post
-            Path: /
-          Type: Api
-      Handler: index.handler
-      Runtime: nodejs6.10
-      Timeout: 5
-    Type: AWS::Serverless::Function
   ContactUsSNSTopic:
+    Type: AWS::SNS::Topic
     Properties:
       DisplayName:
         Fn::Join:
@@ -68,5 +38,75 @@ Resources:
         - ''
         - - Ref: AWS::StackName
           - -topic
-    Type: AWS::SNS::Topic
-Transform: AWS::Serverless-2016-10-31
+  IamRoleLambdaExecution:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: /
+  IamPolicyLambdaExecution:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: IamPolicyLambdaExecution
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          Resource: arn:aws:logs:us-east-1:*:*
+        - Effect: Allow
+          Action:
+          - logs:PutLogEvents
+          Resource: '*'
+        - Effect: Allow
+          Action:
+          - sns:Publish
+          Resource:
+            Ref: ContactUsSNSTopic
+      Roles:
+      - Ref: IamRoleLambdaExecution
+  ContactUsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      Timeout: 5
+      CodeUri: s3://serverless-contact-us-form-webestate/b835fbe66c8bea90009dc6dc2cdeb717
+      Runtime: nodejs8.10
+      Role:
+        Fn::GetAtt:
+        - IamRoleLambdaExecution
+        - Arn
+      Events:
+        PostEvent:
+          Type: Api
+          Properties:
+            Path: /
+            Method: post
+      Environment:
+        Variables:
+          ReCaptchaSecret:
+            Ref: ReCaptchaSecret
+          ContactUsSNSTopic:
+            Ref: ContactUsSNSTopic
+          Subject:
+            Ref: Subject
+Outputs:
+  ApiUrl:
+    Description: URL of your API endpoint
+    Value:
+      Fn::Join:
+      - ''
+      - - https://
+        - Ref: ServerlessRestApi
+        - .execute-api.
+        - Ref: AWS::Region
+        - .amazonaws.com/Prod
