@@ -44,7 +44,6 @@ ___
 ### Deployment
 
 
-
 1. Update the region for logs for resource `IamPolicyLambdaExecution`:
    - `Resource: arn:aws:logs:us-east-1:*:*`
      - _this exists on two lines_
